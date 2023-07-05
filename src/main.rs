@@ -20,7 +20,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         MemoryDatabase::new(),
     )?;
 
-    let address = wallet.get_address(AddressIndex::New)?;
+    // For the demo purposes increase manually 
+    let address = wallet.get_address(AddressIndex::Peek(5))?;
     println!("Generated Address: {}", address);
 
     let client = Client::new("ssl://electrum.blockstream.info:60002")?;
@@ -36,9 +37,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (mut psbt, _details) = {
         let mut builder = wallet.build_tx();
         builder
-            .drain_to(address.script_pubkey())
-            .add_recipient(faucet_address.script_pubkey(), 800)
-            .enable_rbf()
+            .add_recipient(faucet_address.script_pubkey(), 600)
             .fee_rate(FeeRate::from_sat_per_vb(2.0));
         builder.finish()?
     };
