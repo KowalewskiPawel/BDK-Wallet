@@ -10,16 +10,14 @@ use std::str::FromStr;
 fn get_descriptors() -> (String, String) {
     // Create a new secp context
     let secp = Secp256k1::new();
-     
-    // You can also set a password to unlock the mnemonic
-    let password = Some("random password".to_string());
 
     let mut rng = rand::thread_rng();
 
     // Generate a fresh mnemonic, and from there a privatekey
     let mnemonic = Mnemonic::generate_in_with(&mut rng, Language::English, 24).unwrap();
 
-    let xkey: ExtendedKey = (mnemonic, password).into_extended_key().unwrap();
+    dbg!(&mnemonic.to_string());
+    let xkey: ExtendedKey = (mnemonic).into_extended_key().unwrap();
     let xprv = xkey.into_xprv(Network::Testnet).unwrap();
 
     // Create derived privkey from the above master privkey
@@ -50,7 +48,6 @@ fn get_descriptors() -> (String, String) {
 
 
 fn main() {
-
     let (receive_desc, change_desc) = get_descriptors();
     println!("recv: {:#?}, \nchng: {:#?}", receive_desc, change_desc);
 }
